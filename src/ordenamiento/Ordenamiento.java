@@ -16,7 +16,7 @@ import java.util.Scanner;
 public class Ordenamiento <T extends Comparable <T>> {
  
 int comparaciones=0;
-T []a = (T[]) new Comparable[100];
+T []a = (T[]) new Object[100];
 int numElem;
 
 public Ordenamiento(){
@@ -39,7 +39,7 @@ private void add(int id,int date, String nombre){
    if(i==a.length){
        expandCapacity();
    }
-   (Pelicula[])this.a[i]= p;
+   this.a[i]= p;
   numElem++; 
 }
 
