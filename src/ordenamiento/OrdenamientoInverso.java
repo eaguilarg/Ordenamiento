@@ -3,8 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package ordenamiento;
+
+/**
+ *
+ * @author Usuario
+ */
 import java.io.*;
 
 import java.io.BufferedReader;
@@ -17,15 +21,13 @@ import java.util.Scanner;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-
-public class Ordenamiento <T extends Comparable <T>> {
- 
+public class OrdenamientoInverso<T extends Comparable <T>> {
+    
 int comparaciones=0;
 //T []a = (T[]) new Object[100];
 int numElem;
 
-public Ordenamiento(){
+public OrdenamientoInverso(){
     this.numElem=0;
     
 }
@@ -37,7 +39,7 @@ public Ordenamiento(){
             T aux=a[i];
             int j=i-1;
             comparaciones++;
-            while(j>=0 && aux.compareTo(a[j])<0){
+            while(j>=0 && aux.compareTo(a[j])>0){
                 
                 a[j+1]=a[j]; //haces el hueco para insercion
                 j--;
@@ -60,12 +62,12 @@ public Ordenamiento(){
  
   while(i<j){            // mientras no se crucen las búsquedas
       
-     while(a[i].compareTo(pivote)<=0 && i<j) {
+     while(a[i].compareTo(pivote)>=0 && i<j) {
          i++; // busca elemento mayor que pivote
          comparaciones++;
      }
      comparaciones++;
-     while(a[j].compareTo(pivote)>0){
+     while(a[j].compareTo(pivote)<0){
          j--; // busca elemento menor que pivote
          comparaciones++;
      }
@@ -96,7 +98,7 @@ public int cocktailSort( T[] a ){
 		swapped = false;
 		for (int i =0; i<=  a.length  - 2;i++) {
                     comparaciones++;
-			if (a[ i ].compareTo(a[ i + 1 ])>0) {
+			if (a[ i ].compareTo(a[ i + 1 ])<0) {
 				//test whether the two elements are in the wrong order
 				T temp = a[i];
 				a[i] = a[i+1];
@@ -111,7 +113,7 @@ public int cocktailSort( T[] a ){
 		swapped = false;
 		for (int i= a.length - 2;i>=0;i--) {
                     comparaciones++;
-			if (a[ i ].compareTo(a[ i + 1 ])>0) {
+			if (a[ i ].compareTo(a[ i + 1 ])<0) {
 				T temp = a[i];
 				a[i] = a[i+1];
 				a[i+1]=temp;
@@ -145,7 +147,7 @@ public int cocktailSort( T[] a ){
             j++;
              
             for (int i = 0; i < a.length - j; i++) {comparaciones++;                                       
-                  if (a[i].compareTo(a[i + 1])>0) {                          
+                  if (a[i].compareTo(a[i + 1])<0) {                          
                         aux = a[i];
                         a[i] = a[i + 1];
                         a[i + 1] = aux;
@@ -185,7 +187,7 @@ public int cocktailSort( T[] a ){
         
         while(left <= leftEnd && right <= rightEnd){
             comparaciones++;
-            if( a[left].compareTo(a[right]) <= 0)
+            if( a[left].compareTo(a[right]) >= 0)
                 tmp[k++] = a[left++];
             else
                 tmp[k++] = a[right++];
@@ -234,26 +236,34 @@ public int cocktailSort( T[] a ){
         return arr;
     }
   
-    public String[] datosAleatorios(T[] a, int tamaño){
-       ArrayList<String> aux=new ArrayList(); 
-       String[]b=new String[tamaño];
+    public T[] datosAleatorios(T[] a, int tamaño){
+       T []b =  (T[])new Comparable[tamaño];
         Random rnd = new Random();
         int i=0;
         T elem= a[rnd.nextInt(a.length)];
-        while(i<tamaño){
-            if(!aux.contains(elem.toString())){
-                aux.add(elem.toString());
-                i++;
-             }
-          elem= a[rnd.nextInt(a.length)];        
+        while(i<tamaño && !contains(elem, b)){
+            b[i]=elem;
+            i++;
         }
-    
                    
-    return aux.toArray(b);
+    return b;
             
     }
-            
-        
+    
+    
+    private boolean contains(T elem, T [] a){
+        boolean resp=false;//no lo contiene
+        int i=0;
+        T actual= a[i];
+        while(i<a.length && !elem.equals(actual) ){ 
+            i++;
+            actual=a[i];
+        }
+        if(i<a.length)
+            resp=true;//si lo contiene
+        return resp;
+    }
+    
     public String[] copiaDatos(String[] a, int n){
         String[] aux=new String[n];
         for(int i=0; i<n;i++){
@@ -261,26 +271,27 @@ public int cocktailSort( T[] a ){
         }
         return aux;
     }
-    
-    public static void main(String[] args) throws FileNotFoundException {
-    Ordenamiento o= new Ordenamiento();
+
+public static void main(String[] args) throws FileNotFoundException{
+    OrdenamientoInverso o= new OrdenamientoInverso();
     Long start,end;
+   
     
     
     //Datos ordenados
         String a[]=o.cargarDatos();//lectura archivo .txt
             
         //n=100
-     //   String[] n1=o.copiaDatos(a, 100); 
-     //       System.out.println("N=100");
+      //  String[] n1=o.copiaDatos(a, 100); 
+        //    System.out.println("N=100");
             
-           /* System.out.println("Cocktail Sort");
+          /*  System.out.println("Cocktail Sort");
             start=System.currentTimeMillis();
             System.out.println("Comparaciones:"+o.cocktailSort(n1));
             end = System.currentTimeMillis();
             System.out.println("ExecutionTime: "+ ( end - start ) +" milliseconds");*/
             
-          /*  System.out.println("Insertion Sort");
+           /* System.out.println("Insertion Sort");
             start=System.currentTimeMillis();
             System.out.println("Comparaciones:"+o.InsertionSort(n1));
             end = System.currentTimeMillis();
@@ -307,63 +318,63 @@ public int cocktailSort( T[] a ){
             
         
         //n=1,000
-    /*    String[] n2=o.copiaDatos(a, 1000);
-        System.out.println("N=1000");
+     //   String[] n2=o.copiaDatos(a, 1000);
+     //   System.out.println("N=1000");
             
-            System.out.println("Cocktail Sort");
+          /*  System.out.println("Cocktail Sort");
             start=System.currentTimeMillis();
             System.out.println("Comparaciones:"+o.cocktailSort(n2));
             end = System.currentTimeMillis();
-            System.out.println("ExecutionTime: "+ ( end - start ) +" milliseconds");
+            System.out.println("ExecutionTime: "+ ( end - start ) +" milliseconds");*/
             
-            System.out.println("Insertion Sort");
+          /*  System.out.println("Insertion Sort");
             start=System.currentTimeMillis();
             System.out.println("Comparaciones:"+o.InsertionSort(n2));
             end = System.currentTimeMillis();
-            System.out.println("ExecutionTime: "+ ( end - start ) +" milliseconds");
+            System.out.println("ExecutionTime: "+ ( end - start ) +" milliseconds");*/
             
-            System.out.println("Bubble Sort");
+          /*  System.out.println("Bubble Sort");
             start=System.currentTimeMillis();
-            System.out.println("Comparaciones:"+o.bubbleSort(n2));
+            System.out.println("Comparaciones:"+o.bubbleSort(2));
             end = System.currentTimeMillis();
-            System.out.println("ExecutionTime: "+ ( end - start ) +" milliseconds");
+            System.out.println("ExecutionTime: "+ ( end - start ) +" milliseconds");*/
             
-            System.out.println("Merge Sort");
+           /* System.out.println("Merge Sort");
             start=System.currentTimeMillis();
             o.mergeSort(n2);
             System.out.println("Comparaciones:"+o.comparaciones);
             end = System.currentTimeMillis();
-            System.out.println("ExecutionTime: "+ ( end - start ) +" milliseconds");
+            System.out.println("ExecutionTime: "+ ( end - start ) +" milliseconds");*/
             
-            System.out.println("Quick Sort");
+           /* System.out.println("Quick Sort");
             start=System.currentTimeMillis();
             System.out.println("Comparaciones:"+o.quicksort(n2, 0, n2.length-1));
             end = System.currentTimeMillis();
             System.out.println("ExecutionTime: "+ ( end - start ) +" milliseconds");*/
         
         //n=10,000
-       String[] n3=o.copiaDatos(a, 10000);
+        String[] n3=o.copiaDatos(a, 10000);
         System.out.println("N=10,000");
             
-        /*    System.out.println("CocktailSort Sort");
+           /* System.out.println("CocktailSort Sort");
             start=System.currentTimeMillis();
             System.out.println("Comparaciones:"+o.cocktailSort(n3));
             end = System.currentTimeMillis();
-            System.out.println("ExecutionTime: "+ ( end - start ) +" milliseconds");
+            System.out.println("ExecutionTime: "+ ( end - start ) +" milliseconds");*/
             
-            System.out.println("Insertion Sort");
+          /*  System.out.println("Insertion Sort");
             start=System.currentTimeMillis();
             System.out.println("Comparaciones:"+o.InsertionSort(n3));
             end = System.currentTimeMillis();
-            System.out.println("ExecutionTime: "+ ( end - start ) +" milliseconds");
+            System.out.println("ExecutionTime: "+ ( end - start ) +" milliseconds");*/
             
-            System.out.println("Bubble Sort");
+          /*  System.out.println("Bubble Sort");
             start=System.currentTimeMillis();
             System.out.println("Comparaciones:"+o.bubbleSort(n3));
             end = System.currentTimeMillis();
-            System.out.println("ExecutionTime: "+ ( end - start ) +" milliseconds");
+            System.out.println("ExecutionTime: "+ ( end - start ) +" milliseconds");*/
             
-            System.out.println("Merge Sort");
+           /* System.out.println("Merge Sort");
             start=System.currentTimeMillis();
             o.mergeSort(n3);
             System.out.println("Comparaciones:"+o.comparaciones);
@@ -376,180 +387,6 @@ public int cocktailSort( T[] a ){
             end = System.currentTimeMillis();
             System.out.println("ExecutionTime: "+ ( end - start ) +" milliseconds");
     
-        
-        
-        //orden aleatorio
-        
-        
-            
-        //n=100
-           //String[] n1 =o.datosAleatorios(a,100);
-           //System.out.println("N=100");
-         /*   
-           for(int i=1;i<=30;i++){
-                System.out.println(i);
-                String[] n1 =o.datosAleatorios(a,100);
-           System.out.println("Cocktail Sort");
-            start=System.currentTimeMillis();
-            System.out.println("Comparaciones:"+o.cocktailSort(n1));
-            end = System.currentTimeMillis();
-            System.out.println("ExecutionTime: "+ ( end - start ) +" milliseconds");
-           }*/
-          /* 
-            for(int i=1;i<=30;i++){
-                System.out.println(i);
-                String[] n1 =o.datosAleatorios(a,100);
-            System.out.println("Insertion Sort");
-            start=System.currentTimeMillis();
-            System.out.println("Comparaciones:"+o.InsertionSort(n1));
-            end = System.currentTimeMillis();
-            System.out.println("ExecutionTime: "+ ( end - start ) +" milliseconds");
-            }*/
-          /*  
-          for(int i=1;i<=30;i++){
-                System.out.println(i);
-                String[] n1 =o.datosAleatorios(a,100);
-            System.out.println("Bubble Sort");
-            start=System.currentTimeMillis();
-            System.out.println("Comparaciones:"+o.bubbleSort(n1));
-            end = System.currentTimeMillis();
-            System.out.println("ExecutionTime: "+ ( end - start ) +" milliseconds");
-            }*/
-           /*
-            for(int i=1;i<=30;i++){
-                System.out.println(i);
-                String[] n1 =o.datosAleatorios(a,100);
-            System.out.println("Merge Sort");
-            start=System.currentTimeMillis();
-            o.mergeSort(n1);
-            System.out.println("Comparaciones:"+o.comparaciones);
-            end = System.currentTimeMillis();
-            System.out.println("ExecutionTime: "+ ( end - start ) +" milliseconds");
-            }*/
-            /*
-             for(int i=1;i<=30;i++){
-                System.out.println(i);
-                String[] n1 =o.datosAleatorios(a,100);
-            System.out.println("Quick Sort");
-            start=System.currentTimeMillis();
-            System.out.println("Comparaciones:"+o.quicksort(n1, 0, n1.length-1));
-            end = System.currentTimeMillis();
-            System.out.println("ExecutionTime: "+ ( end - start ) +" milliseconds");
-             }*/
-        
-        //n=1,000
-      
-       // System.out.println("N=1000");
-        /*
-            for(int i=1;i<=30;i++){
-                System.out.println(i);
-                String[] n2 =o.datosAleatorios(a,1000);    
-            System.out.println("Cocktail Sort");
-            start=System.currentTimeMillis();
-            System.out.println("Comparaciones:"+o.cocktailSort(n2));
-            end = System.currentTimeMillis();
-            System.out.println("ExecutionTime: "+ ( end - start ) +" milliseconds");
-            }*/
-        /*
-            for(int i=1;i<=30;i++){
-                System.out.println(i);
-                String[] n2 =o.datosAleatorios(a,1000);    
-            System.out.println("Insertion Sort");
-            start=System.currentTimeMillis();
-            System.out.println("Comparaciones:"+o.InsertionSort(n2));
-            end = System.currentTimeMillis();
-            System.out.println("ExecutionTime: "+ ( end - start ) +" milliseconds");
-            }*/
-          /*  
-            for(int i=1;i<=30;i++){
-                System.out.println(i);
-                String[] n2 =o.datosAleatorios(a,1000); 
-            System.out.println("Bubble Sort");
-            start=System.currentTimeMillis();
-            System.out.println("Comparaciones:"+o.bubbleSort(n2));
-            end = System.currentTimeMillis();
-            System.out.println("ExecutionTime: "+ ( end - start ) +" milliseconds");
-            }*/
-           /* 
-            for(int i=1;i<=30;i++){
-                System.out.println(i);
-                String[] n2 =o.datosAleatorios(a,1000); 
-            System.out.println("Merge Sort");
-            start=System.currentTimeMillis();
-            o.mergeSort(n2);
-            System.out.println("Comparaciones:"+o.comparaciones);
-            end = System.currentTimeMillis();
-            System.out.println("ExecutionTime: "+ ( end - start ) +" milliseconds");
-             }*/
-        /*
-            for(int i=1;i<=30;i++){
-                System.out.println(i);
-                String[] n2 =o.datosAleatorios(a,1000);  
-            System.out.println("Quick Sort");
-            start=System.currentTimeMillis();
-            System.out.println("Comparaciones:"+o.quicksort(n2, 0, n2.length-1));
-            end = System.currentTimeMillis();
-            System.out.println("ExecutionTime: "+ ( end - start ) +" milliseconds");
-            }*/
-        //n=10,000
-     //   String[] n3=o.datosAleatorios(a,1000);
-        //  System.out.println("N=10,000");
-          /*
-            for(int i=1;i<=30;i++){
-                System.out.println(i);
-                String[] n3 =o.datosAleatorios(a,10000); 
-            System.out.println("CocktailSort Sort");
-            start=System.currentTimeMillis();
-            System.out.println("Comparaciones:"+o.cocktailSort(n3));
-            end = System.currentTimeMillis();
-            System.out.println("ExecutionTime: "+ ( end - start ) +" milliseconds");
-            }*/
-            /*
-            for(int i=1;i<=30;i++){
-                System.out.println(i);
-                String[] n3 =o.datosAleatorios(a,10000); 
-            System.out.println("Insertion Sort");
-            start=System.currentTimeMillis();
-            System.out.println("Comparaciones:"+o.InsertionSort(n3));
-            end = System.currentTimeMillis();
-            System.out.println("ExecutionTime: "+ ( end - start ) +" milliseconds");
-            }*/
-          /*  
-            for(int i=1;i<=30;i++){
-                System.out.println(i);
-                String[] n3 =o.datosAleatorios(a,10000); 
-            System.out.println("Bubble Sort");
-            start=System.currentTimeMillis();
-            System.out.println("Comparaciones:"+o.bubbleSort(n3));
-            end = System.currentTimeMillis();
-            System.out.println("ExecutionTime: "+ ( end - start ) +" milliseconds");
-            }*/
-            /*
-            for(int i=1;i<=30;i++){
-                System.out.println(i);
-                String[] n3 =o.datosAleatorios(a,10000); 
-            System.out.println("Merge Sort");
-            start=System.currentTimeMillis();
-            o.mergeSort(n3);
-            System.out.println("Comparaciones:"+o.comparaciones);
-            end = System.currentTimeMillis();
-            System.out.println("ExecutionTime: "+ ( end - start ) +" milliseconds");
-            }*/
-           /* 
-            for(int i=1;i<=30;i++){
-                System.out.println(i);
-                String[] n3 =o.datosAleatorios(a,10000); 
-            System.out.println("Quick Sort");
-            start=System.currentTimeMillis();
-            System.out.println("Comparaciones:"+o.quicksort(n3, 0, n3.length-1));
-            end = System.currentTimeMillis();
-            System.out.println("ExecutionTime: "+ ( end - start ) +" milliseconds");
-            }
-        */
     
-    
-       
-    }
-
-    
+}
 }
